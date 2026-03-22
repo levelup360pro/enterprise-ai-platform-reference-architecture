@@ -1,10 +1,10 @@
 # ADR-003: Network Isolation and Data Residency Enforcement
 
-**Status**: Accepted
-**Date**: 10/03/2026
-**Decision Scope**: How all platform services communicate over private networks, how data flows between the processing layer and Microsoft Fabric, and how EU data residency is enforced at the network layer
-**Depends on**: ADR-001 (Processing Paradigm), ADR-002 (Runtime Platform and EU Region Selection)
-**Depended on by**: ADR-005 (Data Protection), ADR-006 (Identity, Authentication, and Authorisation), platform physical diagram, all use-case ADRs
+**Status**: Accepted  
+**Date**: 10/03/2026  
+**Decision Scope**: How all platform services communicate over private networks, how data flows between the processing layer and Microsoft Fabric, and how EU data residency is enforced at the network layer  
+**Depends on**: ADR-001 (Processing Paradigm), ADR-002 (Runtime Platform and EU Region Selection)  
+**Depended on by**: ADR-005 (Data Protection), ADR-006 (Identity, Authentication, and Authorisation), platform physical diagram, all use-case ADRs  
 
 ---
 ## Context

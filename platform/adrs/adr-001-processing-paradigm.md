@@ -1,8 +1,8 @@
 # ADR-001: Processing Paradigm
 
-**Status**: Accepted
-**Date**: 09/03/2026
-**Decision Scope**: Whether to use traditional deterministic software, fully autonomous multi-agent systems, or a hybrid approach as the fundamental processing paradigm for the enterprise AI platform
+**Status**: Accepted  
+**Date**: 09/03/2026  
+**Decision Scope**: Whether to use traditional deterministic software, fully autonomous multi-agent systems, or a hybrid approach as the fundamental processing paradigm for the enterprise AI platform  
 **Depended on by**: ADR-002 (Runtime Platform and EU Region Selection), all use-case ADRs
 
 ---

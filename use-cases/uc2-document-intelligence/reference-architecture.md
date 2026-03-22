@@ -1,9 +1,9 @@
 # UC2: Document Intelligence - Reference Architecture
 
-**Status:** Draft
-**Date:** 20/03/2026 (last updated)
-**Repository:** `use-cases/uc2-document-intelligence/reference-architecture.md`
-**Platform dependency:** This use case deploys on the shared Enterprise AI Platform. See the [Enterprise AI Platform reference architecture](../../platform/reference-architecture.md).
+**Status:** Draft  
+**Date:** 20/03/2026 (last updated)  
+**Repository:** `use-cases/uc2-document-intelligence/reference-architecture.md`  
+**Platform dependency:** This use case deploys on the shared Enterprise AI Platform. See the [Enterprise AI Platform reference architecture](../../platform/reference-architecture.md).  
 
 ---
 

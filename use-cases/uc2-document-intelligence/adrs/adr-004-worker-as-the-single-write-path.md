@@ -1,10 +1,10 @@
 # UC2-ADR-004: Worker as the Single Write Path
 
-**Status**: Draft
-**Date**: 14/03/2026
-**Decision Scope**: Which component owns authoritative writes to workflow state and staging.
-**Depends on**: UC2-ADR-001 (Layered Hexagonal Architecture)
-**Depended on by**: UC2-ADR-002 (Post-Extraction PII Classification), UC2-ADR-003 (Confidence-Based Workflow Routing), UC2-ADR-005 (Separate Extraction from Embedding Generation), UC2-ADR-006 (Staging as the Governed Downstream Boundary), UC2-ADR-007 (Azure SQL as the Workflow System of Record)
+**Status**: Draft  
+**Date**: 14/03/2026  
+**Decision Scope**: Which component owns authoritative writes to workflow state and staging.  
+**Depends on**: UC2-ADR-001 (Layered Hexagonal Architecture)  
+**Depended on by**: UC2-ADR-002 (Post-Extraction PII Classification), UC2-ADR-003 (Confidence-Based Workflow Routing), UC2-ADR-005 (Separate Extraction from Embedding Generation), UC2-ADR-006 (Staging as the Governed Downstream Boundary), UC2-ADR-007 (Azure SQL as the Workflow System of Record)  
 
 ---
 

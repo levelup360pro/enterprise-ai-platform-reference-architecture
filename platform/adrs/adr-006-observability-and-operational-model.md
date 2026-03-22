@@ -1,10 +1,10 @@
 # ADR-006: Observability and Auditability (Placeholder)
 
-**Status:** Planned
-**Date:** 
-**Decision Scope:** Telemetry architecture, tracing model, alerting strategy, audit logging, correlation design, and operational model for the AI platform. 
-**Depends on:** ADR-003 (Network Isolation and Data Residency Enforcement), ADR-004 (Identity, Authentication, and Authorisation), ADR-005 (Data Protection)
-**Depended on by:** None (terminal ADR in current chain)
+**Status:** Planned  
+**Date:**   
+**Decision Scope:** Telemetry architecture, tracing model, alerting strategy, audit logging, correlation design, and operational model for the AI platform.  
+**Depends on:** ADR-003 (Network Isolation and Data Residency Enforcement), ADR-004 (Identity, Authentication, and Authorisation), ADR-005 (Data Protection)  
+**Depended on by:** None (terminal ADR in current chain)  
 
 ---
 

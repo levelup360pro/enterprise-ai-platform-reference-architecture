@@ -1,10 +1,10 @@
 # UC2-ADR-008: Schema-Defined Extraction by Document Type
 
-**Status**: Draft
-**Date**: 19/03/2026
-**Decision Scope**: How extraction schemas are selected and managed across document types.
-**Depends on**: UC2-ADR-001 (Layered Hexagonal Architecture), UC2-ADR-003 (Confidence-Based Workflow Routing), UC2-ADR-004 (Worker as the Single Write Path)
-**Depended on by**: None
+**Status**: Draft  
+**Date**: 19/03/2026  
+**Decision Scope**: How extraction schemas are selected and managed across document types.  
+**Depends on**: UC2-ADR-001 (Layered Hexagonal Architecture), UC2-ADR-003 (Confidence-Based Workflow Routing), UC2-ADR-004 (Worker as the Single Write Path)  
+**Depended on by**: None  
 
 ---
 

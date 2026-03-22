@@ -1,10 +1,10 @@
 # ADR-005: Data Protection
 
-**Status**: Accepted
-**Date**: 11/03/2026
-**Decision Scope**: Encryption of data at rest (customer-managed keys and Microsoft-managed keys per service), key management and rotation strategy, TLS enforcement for data in transit, and data classification integration points
-**Depends on**: ADR-001 (Processing Paradigm), ADR-002 (Runtime Platform and EU Region Selection), ADR-003 (Network Isolation and Data Residency Enforcement), ADR-004 (Identity, Authentication, and Authorisation)
-**Depended on by**: ADR-006 (Observability and Operational Model)
+**Status**: Accepted  
+**Date**: 11/03/2026  
+**Decision Scope**: Encryption of data at rest (customer-managed keys and Microsoft-managed keys per service), key management and rotation strategy, TLS enforcement for data in transit, and data classification integration points  
+**Depends on**: ADR-001 (Processing Paradigm), ADR-002 (Runtime Platform and EU Region Selection), ADR-003 (Network Isolation and Data Residency Enforcement), ADR-004 (Identity, Authentication, and Authorisation)  
+**Depended on by**: ADR-006 (Observability and Operational Model)  
 
 ---
 

@@ -1,9 +1,9 @@
 # ADR-002: Runtime Platform and EU Region Selection
 
-**Status**: Accepted
-**Date**: 09/03/2026
-**Decision Scope**: Front-end hosting, backend runtime, background processing pattern, queueing bias, workflow state store, and primary deployment region for the enterprise AI platform
-**Depends on**: ADR-001 (Processing Paradigm)
+**Status**: Accepted  
+**Date**: 09/03/2026  
+**Decision Scope**: Front-end hosting, backend runtime, background processing pattern, queueing bias, workflow state store, and primary deployment region for the enterprise AI platform  
+**Depends on**: ADR-001 (Processing Paradigm)  
 
 ---
 

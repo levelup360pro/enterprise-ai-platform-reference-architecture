@@ -1,8 +1,8 @@
 # Enterprise AI Platform: Reference Architecture
 
-**Status:** Draft
-**Date:** 13/03/2026 (last updated)
-**Repository:** `platform/reference-architecture.md`
+**Status:** Draft  
+**Date:** 13/03/2026 (last updated)  
+**Repository:** `platform/reference-architecture.md`  
 
 ---
 

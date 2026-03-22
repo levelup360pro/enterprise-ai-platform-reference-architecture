@@ -1,10 +1,10 @@
 # ADR-004: Identity, Authentication, and Authorisation
 
-**Status**: Accepted
-**Date**: 10/03/2026
-**Decision Scope**: Identity primitives, authentication model, authorisation strategy, and key management for all platform services
-**Depends on**: ADR-001 (Processing Paradigm), ADR-002 (Runtime Platform and EU Region Selection), ADR-003 (Network Isolation and Data Residency Enforcement)
-**Depended on by**: ADR-005 (Data Protection), ADR-006 (Observability and Operational Model)
+**Status**: Accepted  
+**Date**: 10/03/2026  
+**Decision Scope**: Identity primitives, authentication model, authorisation strategy, and key management for all platform services  
+**Depends on**: ADR-001 (Processing Paradigm), ADR-002 (Runtime Platform and EU Region Selection), ADR-003 (Network Isolation and Data Residency Enforcement)  
+**Depended on by**: ADR-005 (Data Protection), ADR-006 (Observability and Operational Model)  
 
 ---
 

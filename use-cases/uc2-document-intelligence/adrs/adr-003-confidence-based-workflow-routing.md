@@ -1,10 +1,10 @@
 # UC2-ADR-003: Confidence-Based Workflow Routing
 
-**Status**: Draft
-**Date**: 13/03/2026
-**Decision Scope**: How extraction quality determines workflow progression.
-**Depends on**: UC2-ADR-001 (Layered Hexagonal Architecture)
-**Depended on by**: UC2-ADR-007 (Azure SQL as the Workflow System of Record)
+**Status**: Draft  
+**Date**: 13/03/2026  
+**Decision Scope**: How extraction quality determines workflow progression.  
+**Depends on**: UC2-ADR-001 (Layered Hexagonal Architecture)  
+**Depended on by**: UC2-ADR-007 (Azure SQL as the Workflow System of Record)  
 
 ---
 
