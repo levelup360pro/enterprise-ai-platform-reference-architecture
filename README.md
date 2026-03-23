@@ -6,7 +6,7 @@ This repository documents the architecture of an enterprise AI platform that uni
 
 There is no code here. This is an architecture reference. The design decisions, trade-off analyses, and infrastructure patterns required to take a production-grade enterprise AI system from whiteboard to production in a regulated European environment.
 
-The use cases are drawn from real work in financial services and aircraft leasing. The architecture applies to any industry where organisations manage large volumes of complex documents across fragmented systems, face regulatory compliance obligations, and need AI systems that are governed, auditable, and human-supervised before anything reaches production.
+The use cases reflect real problems found in regulated enterprises: large volumes of complex documents across fragmented systems, regulatory compliance obligations, and the need for AI systems that are governed, auditable, and human-supervised before anything reaches production.
 
 ---
 
