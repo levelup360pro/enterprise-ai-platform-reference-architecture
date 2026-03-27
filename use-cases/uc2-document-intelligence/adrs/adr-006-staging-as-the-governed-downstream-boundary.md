@@ -1,10 +1,10 @@
 # UC2-ADR-006: Staging as the Governed Downstream Boundary
 
-**Status**: Draft  
-**Date**: 17/03/2026  
-**Decision Scope**: Where the boundary sits between UC2 processing and downstream consumers.  
-**Depends on**: UC2-ADR-001 (Layered Hexagonal Architecture), UC2-ADR-002 (Post-Extraction PII Classification), UC2-ADR-003 (Confidence-Based Workflow Routing), UC2-ADR-004 (Worker as the Single Write Path), UC2-ADR-005 (Separate Extraction from Embedding Generation)  
-**Depended on by**: None  
+**Status**: Draft
+**Date**: 17/03/2026
+**Decision Scope**: Where the boundary sits between UC2 processing and downstream consumers.
+**Depends on**: UC2-ADR-001 (Layered Hexagonal Architecture), UC2-ADR-002 (Post-Extraction PII Classification), UC2-ADR-003 (Policy-Driven Workflow Routing), UC2-ADR-004 (Worker as the Single Write Path), UC2-ADR-005 (Separate Extraction from Embedding Generation)
+**Depended on by**: None
 
 ---
 

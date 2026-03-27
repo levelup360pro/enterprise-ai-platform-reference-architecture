@@ -6,18 +6,28 @@ Transforms fragmented enterprise documents (contracts, amendments, NDAs, corresp
 
 **Start here:** [reference-architecture.md](reference-architecture.md)
 
+> **Note:** This is a reference architecture for governed document intelligence on the Microsoft stack. It is not a product and it is not designed for a specific organisation.
+> 
+> The patterns, decision records, and component choices are intended to be adapted to a specific context: the source systems, governance requirements, document types, and operational constraints of the organisation using it inform the final design. It is there for teams to reference, test ideas against, or use parts of in their own context. 
+> 
+> This architecture is actively evolving. Diagrams, workflows, and component details reflect current design decisions and will be refined as the system is built and validated against production constraints. Structural changes will be captured in updated ADRs.
+> 
 ## UC2 ADRs
 
-| ADR     | Title                                         | Decision Scope                                                                        | Status |
-| ------- | --------------------------------------------- | ------------------------------------------------------------------------------------- | ------ |
-| ADR-001 | Layered Hexagonal Architecture for UC2        | How UC2 separates orchestration, domain logic, infrastructure, and external resources | Draft  |
-| ADR-002 | Post-Extraction PII Classification            | When and how PII is identified in UC2 extraction outputs                              | Draft  |
-| ADR-003 | Confidence-Based Workflow Routing             | How extraction quality determines workflow progression                                | Draft  |
-| ADR-004 | Worker as the Single Write Path               | Which component owns authoritative writes to workflow state and staging               | Draft  |
-| ADR-005 | Separate Extraction from Embedding Generation | Whether extraction and embedding are combined or independent pipeline stages          | Draft  |
-| ADR-006 | Staging as the Governed Downstream Boundary   | Where the boundary sits between UC2 processing and downstream consumers               | Draft  |
-| ADR-007 | Azure SQL as the Workflow System of Record    | Where workflow state and operational truth are persisted                              | Draft  |
-| ADR-008 | Schema-Defined Extraction by Document Type    | How extraction schemas are selected and managed across document types                 | Draft  |
+| ADR     | Title                                              | Decision Scope                                                                                                 | Status |
+| ------- | -------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | ------ |
+| ADR-001 | Layered Hexagonal Architecture for UC2             | How UC2 separates orchestration, domain logic, infrastructure, and external resources                          | Draft  |
+| ADR-002 | Post-Extraction PII Classification                 | When and how PII is identified in UC2 extraction outputs                                                       | Draft  |
+| ADR-003 | Policy-Driven Workflow Routing                     | How extraction outcomes are routed using confidence and other control inputs                                   | Draft  |
+| ADR-004 | Worker as the Single Write Path                    | Which component owns authoritative writes to workflow state and staging                                        | Draft  |
+| ADR-005 | Separate Extraction from Embedding Generation      | Whether extraction and embedding are combined or independent pipeline stages                                   | Draft  |
+| ADR-006 | Staging as the Governed Downstream Boundary        | Where the boundary sits between UC2 processing and downstream consumers                                        | Draft  |
+| ADR-007 | Azure SQL as the Workflow System of Record         | Where workflow state and operational truth are persisted                                                       | Draft  |
+| ADR-008 | Schema-Defined Extraction by Document Type         | How extraction schemas are selected and managed across document types                                          | Draft  |
+| ADR-009 | Source-Aware Ingestion and Metadata Preservation   | How documents enter UC2 and how source reference and metadata are preserved across the workflow                | Draft  |
+| ADR-010 | Duplicate Handling and Reprocessing Semantics      | How UC2 distinguishes repeated ingestion, source-document change, and intentional reprocessing                 | Draft  |
+| ADR-011 | Failure Handling, Retry Budget, and Dead-Letter Semantics | How UC2 handles failures, bounds retries, and represents terminal failure for operational recovery       | Draft  |
+| ADR-012 | Agentic Validation Between Routing and Human Review | How UC2 uses optional agentic validation to enrich, resolve, or escalate policy-selected outputs before review | Draft  |
 
 ## Diagrams
 

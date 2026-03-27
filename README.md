@@ -20,7 +20,7 @@ Across regulated industries (aviation leasing, banking, insurance, asset managem
 
 **Contract complexity.** Hundreds of pages per agreement. Cross-jurisdictional. Ambiguous clauses. Amendments referencing amendments. Return conditions spread across multiple documents spanning years. Nobody reads all of it. Everybody assumes somebody else has.
 
-**Reactive compliance.** Audit preparation is a scramble. Regulatory evidence is assembled manually under time pressure. AI systems deployed without governance documentation. No confidence scores, no audit trails, no human review thresholds. The EU AI Act high-risk obligations take effect August 2026. Most organisations are not ready.
+**Reactive compliance.** Audit preparation is a scramble. Regulatory evidence is assembled manually under time pressure. AI systems deployed without governance documentation. No confidence scores, no audit trails, no routing policy, no human review thresholds. The EU AI Act high-risk obligations take effect August 2026. Most organisations are not ready.
 
 **Small IT teams relative to operational complexity.** These are not technology companies. They manage billions in assets with lean teams. Off-the-shelf products don't fit the operational specifics. Building from scratch is not realistic. They need someone who understands the architecture, the constraints, and the delivery path.
 
@@ -32,7 +32,7 @@ None of these are technology problems. They are architecture problems. The techn
 
 Four capabilities, built on a shared platform. Not four separate projects. One data and AI platform with four functions.
 
-**Document Intelligence.** Extraction, classification, and unification of enterprise documents into governed structured outputs for downstream analytics and retrieval. One example is building a governed view of the contractual relationship with a given client from the underlying document estate and related enterprise data. Confidence scoring on every extracted field. Low-confidence results routed to human review. Structured output lands in Microsoft Fabric for relationship-oriented analytics.
+**Document Intelligence.** Extraction, classification, and unification of enterprise documents into governed structured outputs for downstream analytics and retrieval. One example is building a governed view of the contractual relationship with a given client from the underlying document estate and related enterprise data. Confidence scoring on every extracted field. Extraction outcomes are routed through policy-driven controls. Some proceed directly. Some enter intermediate validation. Some require human review before operationalisation. Structured output lands in Microsoft Fabric for relationship-oriented analytics.
 
 **Conversational Analytics.** Natural language querying across structured data in Fabric and enterprise systems, using RAG with AI Search and Foundry models. Business users ask questions in plain English and get grounded answers with source citations. Copilot Studio as the delivery channel where it makes sense for M365 organisations.
 
@@ -68,7 +68,7 @@ Built on the Microsoft enterprise stack. Not because it is the only option. Beca
 
 **Data Platform:** Microsoft Fabric (Medallion Architecture, Lakehouse, Delta tables, Data Factory, Spark), Azure AI Search (hybrid retrieval, vector + keyword + semantic ranking, RAG).
 
-**Application Runtime:** Azure Container Apps for all application components (frontend, API, worker). Azure Service Bus for asynchronous message coordination. Azure SQL Database for workflow state.
+**Application Runtime:** Azure Container Apps for all application components and workflow execution. Azure Service Bus for asynchronous dispatch and workflow resumption. Azure SQL Database for workflow state and operational truth.
 
 **Identity and Security:** Microsoft Entra ID managed identities, Azure Key Vault Premium (CMK encryption, FIPS 140-3 Level 3), Azure Policy (region enforcement, SKU restrictions, key-based auth prohibition), VNet with private endpoints on all services.
 
@@ -78,7 +78,7 @@ Built on the Microsoft enterprise stack. Not because it is the only option. Beca
 
 ## How Design Decisions Are Made
 
-Every significant architecture choice is documented as an Architecture Decision Record (ADR) in this repository. Each ADR includes the context, the options considered with pros and cons, the decision, the consequences, and the follow-up actions.
+Every significant architecture choice is documented as an Architecture Decision Record (ADR) in this repository. Some decisions apply across the shared platform. Others are use-case-specific. Platform ADRs define the baseline controls, runtime, network, identity, and operating model. Use-case ADRs capture decisions specific to a capability such as document intelligence, including ingestion, routing, validation, review, and governed staging. Each ADR includes the context, the options considered with pros and cons, the decision, the consequences, and where relevant, the follow-up actions.
 
 These are not theoretical. They come from hands-on experience building on the Microsoft AI platform in regulated environments and direct research of current platform capabilities: GA vs preview status, regional availability, private networking support, and production readiness. Where a feature is in preview or lacks critical capability (such as private networking), it is noted and an alternative is chosen.
 
@@ -98,7 +98,7 @@ This architecture addresses the high-risk requirements as infrastructure, not as
 
 **Article 11 (Technical Documentation):** The ADR log in this repository is the technical documentation. Every design decision, alternative considered, and rationale is recorded.
 
-**Article 14 (Human Oversight):** Two-tier human-in-the-loop. Confidence thresholds route low-confidence AI outputs to human review. Quality gates between pipeline stages halt processing until human approval. No autonomous decisions on high-stakes outputs.
+**Article 14 (Human Oversight):** Policy-driven human oversight. Extraction outcomes are routed using confidence and other control inputs. Where policy enables it, intermediate validation can enrich or challenge low-confidence outputs before final routing. Human review remains mandatory where the policy or use case requires explicit approval. Quality gates between pipeline stages prevent ungoverned outputs from reaching downstream consumers.
 
 **Article 12 (Record-Keeping):** Every AI output includes confidence scores, source grounding, and audit trail entries. Workflow traces capture the full decision lineage from document ingestion to structured output.
 

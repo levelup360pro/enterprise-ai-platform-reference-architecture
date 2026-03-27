@@ -70,11 +70,11 @@ This is a reference architecture view. It shows the major components, trust boun
     
 2. **The Frontend Container App** receives user requests and forwards them to the API Container App over HTTPS 443 within the internal Container Apps Environment. Both apps run in the App Subnet of the Spoke VNet. The environment is configured as internal with no public endpoint.
     
-3. **The API Container App** processes requests and delegates long-running or asynchronous tasks to the Worker Container App via Azure Service Bus (AMQP over TLS, TCP 5671). Service Bus acts as the message broker, decoupling request intake from processing. The Worker Container App consumes messages and executes document processing, AI inference orchestration, and background workflows.
+3. **The API Container App** processes requests and delegates long-running or asynchronous tasks to the Worker Container App via Azure Service Bus (AMQP over TLS, TCP 5671). Service Bus acts as the message broker, decoupling request intake from processing. The Worker Container App consumes messages and executes asynchronous workload processing, AI inference orchestration, and background workflows. The exact orchestration, routing, and review semantics are defined in the relevant use-case architecture.
     
-4. **All compute-layer services** communicate with PaaS services exclusively through private endpoints deployed in the Private Endpoints Subnet. Each private endpoint resolves via a linked Private DNS Zone, keeping all traffic on the Azure backbone. Private endpoint connections exist for Key Vault, AI Search, Staging Storage, Document Ingestion Storage, Microsoft Foundry, Azure SQL Database, Service Bus, and the Azure Monitor Private Link Scope (AMPLS).
+4. **All compute-layer services** communicate with PaaS services exclusively through private endpoints deployed in the Private Endpoints Subnet. Each private endpoint resolves via a linked Private DNS Zone, keeping all traffic on the Azure backbone. Private endpoint connections exist for Key Vault, AI Search, Staging Storage, Microsoft Foundry, Azure SQL Database, Service Bus, and the Azure Monitor Private Link Scope (AMPLS). Where a use case requires a platform-controlled document copy, Document Ingestion Storage is also accessed through a private endpoint.
     
-5. **Microsoft Foundry** provides the AI services layer including model inference, content safety, and Content Understanding for document intelligence. Foundry guardrails enforce content filtering on all model interactions. PII detection operates at workflow boundaries before and after model calls.
+5. **Microsoft Foundry** provides the AI services layer including model inference, content safety, and Content Understanding for document intelligence. Foundry guardrails enforce content filtering on model interactions. Safety, validation, and PII handling occur at workflow boundaries defined by the relevant use-case architecture rather than being assumed as a single fixed platform pattern.
     
 6. **Azure AI Search** stores and queries vector and keyword indexes over the document corpus. The compute layer queries AI Search through its private endpoint. The AI Search indexer reads from Staging Storage via a resource instance rule on the storage firewall rather than a private endpoint. AI Search accesses Key Vault for CMK operations via a shared private link, a search-service-managed private endpoint that is distinct from both the customer-deployed private endpoint and the trusted-services firewall bypass.
     
@@ -121,7 +121,7 @@ Azure AI Search provides vector search, keyword search, hybrid search, and seman
 
 ### Document Ingestion Storage (Azure Blob Storage)
 
-Document Ingestion Storage is the landing zone for documents entering the platform. Documents arrive from external sources, user uploads, or automated pipelines. The compute layer accesses this account via a private endpoint. CMK encryption is enabled. See ADR-005 for key management detail.
+Document Ingestion Storage is used where a use case requires a platform-controlled copy of source documents. Depending on the selected ingestion mode, documents may be retained persistently, held transiently for processing, or remain solely in the source system. Where used, the compute layer accesses this account via a private endpoint. CMK encryption is enabled. See ADR-005 for key management detail.
 
 ### Staging Storage (Azure Data Lake Storage Gen2)
 
@@ -233,7 +233,7 @@ Compute-layer telemetry flows through AMPLS in private-only mode to Application 
 
 ### AI Safety
 
-Microsoft Foundry content safety filters are enabled on all model deployments, covering both input and output. PII detection runs at workflow boundaries. System prompts enforce behavioural boundaries: the AI flags findings, humans decide; all outputs cite sources; the model does not present outputs as compliance determinations. See ADR-001 for the AI safety framework and human oversight model.
+Microsoft Foundry content safety filters are enabled on all model deployments, covering both input and output. Microsoft Foundry content safety filters are enabled on model deployments. Workflow-level controls such as routing, optional intermediate validation, human review, and PII handling are defined in the relevant use-case architecture. System prompts and workflow policies enforce behavioural boundaries: the AI flags findings, humans decide where required; outputs are expected to retain traceability to sources; and models must not present outputs as compliance determinations unless the use case explicitly defines and governs that behaviour. See ADR-001 for the AI safety framework and human oversight model.
 
 ### Data Governance
 
@@ -256,6 +256,7 @@ Microsoft Purview is integrated with Fabric, Storage, and Foundry for classifica
 - Durable operational state is stored in Azure SQL, not inferred from message queue state
 - Service Bus is used for dispatch and coordination, not as a system of record
 - Fabric is a consumption and analytics plane, not the runtime execution plane
+- Some use cases may operate with persistent-copy, transient-copy, or no-copy ingestion patterns. The platform supports these patterns but does not prescribe one universally.
 - Some Azure service integrations require access patterns (trusted-services bypass, shared private links, resource instance rules) that do not map to a pure private-endpoint-only model. These are documented exceptions, not workarounds. All three mechanisms operate over the Microsoft backbone network, not the public internet. Public access remains disabled on every service.
 - Purview is an integration point in this architecture, not a fully designed workstream
 

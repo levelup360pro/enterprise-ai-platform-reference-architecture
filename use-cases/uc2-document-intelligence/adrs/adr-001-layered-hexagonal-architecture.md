@@ -1,10 +1,10 @@
 # UC2-ADR-001: Layered Hexagonal Architecture for UC2
 
-**Status**: Draft  
-**Date**: 13/03/2026  
-**Decision Scope**: How UC2 separates orchestration, domain logic, infrastructure, and external resources.  
-**Depends on**: Enterprise AI Platform reference architecture, ADR-003 (Network Isolation and Data Residency Enforcement), ADR-004 (Identity, Authentication, and Authorisation)  
-**Depended on by**: UC2-ADR-002, UC2-ADR-003, UC2-ADR-004, UC2-ADR-005, UC2-ADR-006, UC2-ADR-007, UC2-ADR-008  
+**Status**: Draft
+**Date**: 13/03/2026
+**Decision Scope**: How UC2 separates orchestration, domain logic, infrastructure, and external resources.
+**Depends on**: Enterprise AI Platform reference architecture, ADR-003 (Network Isolation and Data Residency Enforcement), ADR-004 (Identity, Authentication, and Authorisation)
+**Depended on by**: UC2-ADR-002, UC2-ADR-003, UC2-ADR-004, UC2-ADR-005, UC2-ADR-006, UC2-ADR-007, UC2-ADR-008
 
 ---
 

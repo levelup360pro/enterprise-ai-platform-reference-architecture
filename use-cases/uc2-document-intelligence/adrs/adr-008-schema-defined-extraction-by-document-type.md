@@ -1,10 +1,10 @@
 # UC2-ADR-008: Schema-Defined Extraction by Document Type
 
-**Status**: Draft  
-**Date**: 19/03/2026  
-**Decision Scope**: How extraction schemas are selected and managed across document types.  
-**Depends on**: UC2-ADR-001 (Layered Hexagonal Architecture), UC2-ADR-003 (Confidence-Based Workflow Routing), UC2-ADR-004 (Worker as the Single Write Path)  
-**Depended on by**: None  
+**Status**: Draft
+**Date**: 19/03/2026
+**Decision Scope**: How extraction schemas are selected and managed across document types.
+**Depends on**: UC2-ADR-001 (Layered Hexagonal Architecture), UC2-ADR-003 (Policy-Driven Workflow Routing), UC2-ADR-004 (Worker as the Single Write Path)
+**Depended on by**: None
 
 ---
 
@@ -35,7 +35,7 @@ One schema covering all possible fields across all document types. Every documen
 
 Trade-off: Simple to manage. One schema, one extraction call, one output shape. But precision degrades. The model attempts to extract fields that do not exist in the document, producing low-confidence nulls or false matches. Confidence evaluation becomes noisy because null fields with low confidence are expected rather than exceptional. Downstream consumers must handle sparse, unpredictable output. Adding a new document type means expanding the single schema, which risks affecting extraction quality for existing types.
 
-### Option B: Schema per document type with classification-driven selection
+### Option B: Schema per document type with classification-driven selection (SELECTED)
 
 Each supported document type has its own extraction schema defining the fields, types, and inference rules relevant to that type. The DocumentClassifier determines the document type first. The Worker then selects the corresponding schema and passes it to Content Understanding for extraction. New document types are onboarded by adding a new schema and registering it with the classifier.
 

@@ -1,10 +1,10 @@
 # UC2-ADR-005: Separate Extraction from Embedding Generation
 
-**Status**: Draft  
-**Date**: 14/03/2026  
-**Decision Scope**: Whether extraction and embedding are combined or independent pipeline stages.  
-**Depends on**: UC2-ADR-001 (Layered Hexagonal Architecture), UC2-ADR-004 (Worker as the Single Write Path)  
-**Depended on by**: UC2-ADR-006 (Staging as the Governed Downstream Boundary)  
+**Status**: Draft
+**Date**: 14/03/2026
+**Decision Scope**: Whether extraction and embedding are combined or independent pipeline stages.
+**Depends on**: UC2-ADR-001 (Layered Hexagonal Architecture), UC2-ADR-004 (Worker as the Single Write Path)
+**Depended on by**: UC2-ADR-006 (Staging as the Governed Downstream Boundary)
 
 ---
 

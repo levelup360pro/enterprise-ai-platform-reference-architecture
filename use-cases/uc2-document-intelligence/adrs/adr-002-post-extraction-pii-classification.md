@@ -1,10 +1,10 @@
 # UC2-ADR-002: Post-Extraction PII Classification
 
-**Status**: Draft  
-**Date**: 16/03/2026  
-**Decision Scope**: When and how PII is identified in UC2 extraction outputs.  
-**Depends on**: Enterprise AI Platform reference architecture, ADR-001 (Processing Paradigm), ADR-003 (Network Isolation and Data Residency Enforcement), ADR-004 (Identity, Authentication, and Authorisation), UC2-ADR-001 (Layered Hexagonal Architecture), UC2-ADR-004 (Worker as the Single Orchestration Owner)  
-**Depended on by**: UC2-ADR-006 (Staging as the Governed Downstream Boundary)  
+**Status**: Draft
+**Date**: 16/03/2026
+**Decision Scope**: When and how PII is identified in UC2 extraction outputs.
+**Depends on**: Enterprise AI Platform reference architecture, ADR-001 (Processing Paradigm), ADR-003 (Network Isolation and Data Residency Enforcement), ADR-004 (Identity, Authentication, and Authorisation), UC2-ADR-001 (Layered Hexagonal Architecture), UC2-ADR-004 (Worker as the Single Orchestration Owner)
+**Depended on by**: UC2-ADR-006 (Staging as the Governed Downstream Boundary)
 
 ---
 
