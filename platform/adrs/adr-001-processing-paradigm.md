@@ -217,24 +217,3 @@ This is not "agents vs. pipelines." It is Workflows with three patterns of Execu
 |Reproducibility|Full|Probabilistic|Deterministic persistence; probabilistic reasoning in bounded stages|
 |EU AI Act alignment|Yes|Difficult|Yes|
 |Migration to managed compute|No framework-assisted portability|Partial, depending on hosting model|Best portability of the three, subject to runtime differences|
-
----
-
-## References
-
-- [Microsoft Agent Framework: Workflows Overview](https://learn.microsoft.com/en-us/agent-framework/workflows/)
-- [Microsoft Agent Framework: Executors](https://learn.microsoft.com/en-us/agent-framework/workflows/executors)
-- [Microsoft Agent Framework: Edges](https://learn.microsoft.com/en-us/agent-framework/workflows/edges)
-- [Microsoft Agent Framework: Events](https://learn.microsoft.com/en-us/agent-framework/workflows/events)
-- [Building Multi-Step Workflows with Agent Framework (Venya Brodetskiy, Medium)](https://medium.com/@venya-brodetskiy/building-multi-step-workflows-with-agent-framework-d22967d0503f)
-- [Enterprise AI Workflows with Microsoft Agent Framework (Pondhouse Data)](https://www.pondhouse-data.com/blog/enterprise-ai-workflows-with-microsoft-agent-framework)
-- [Microsoft Agent Framework: Powering Up Your Agentic Teammate (Scott Logic, March 2026)](https://blog.scottlogic.com/2026/03/06/microsoft-agent-framework-powering-up-your-agentic-teammate.html)
-- [Agents vs. Workflows: A Decision Framework (Rotascale, June 2025)](https://rotascale.com/blog/agents-vs-workflows-decision-framework/)
-- [AI Agents vs. AI Workflows: Why Pipelines Dominate in 2025 (Intuition Labs)](https://intuitionlabs.ai/articles/ai-agent-vs-ai-workflow)
-- [Multi-agent orchestration: Deterministic vs AI-directed approaches (Chris Gillum, Microsoft, November 2025)](https://www.linkedin.com/posts/chris-gillum_orchestrate-distributed-ai-agents-with-azure-activity-7398404010296242176-B0zC)
-- [Choosing the Right Intelligence Layer for Your Application (Microsoft Tech Community, February 2026)](https://techcommunity.microsoft.com/blog/educatordeveloperblog/choosing-the-right-intelligence-layer-for-your-application/4493143)
-- [Microsoft Agent Framework: Deterministic + Dynamic Orchestration (October 2025)](https://devblogs.microsoft.com/foundry/introducing-microsoft-agent-framework-the-open-source-engine-for-agentic-ai-apps/)
-- [Process to Build Agents Across Your Organisation (Azure Cloud Adoption Framework, December 2025)](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ai-agents/build-secure-process)
-- [Azure Architecture Center: AI Agent Design Patterns](https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/ai-agent-design-patterns)
-- [Jobs in Azure Container Apps (Microsoft Learn)](https://learn.microsoft.com/en-us/azure/container-apps/jobs)
-- [Agent Framework Python Workflow Samples](https://github.com/microsoft/agent-framework/tree/main/python/samples/03-workflows)
