@@ -1,9 +1,9 @@
 # UC2-ADR-007: Azure SQL as the Workflow System of Record
 
-**Status**: Draft
-**Date**: 17/03/2026
-**Decision Scope**: Where workflow state and operational truth are persisted.
-**Depends on**: Enterprise AI Platform reference architecture, UC2-ADR-001 (Layered Hexagonal Architecture), UC2-ADR-003 (Policy-Driven Workflow Routing), UC2-ADR-004 (Worker as the Single Write Path)
+**Status**: Draft  
+**Date**: 17/03/2026  
+**Decision Scope**: Where workflow state and operational truth are persisted.  
+**Depends on**: Enterprise AI Platform reference architecture, UC2-ADR-001 (Layered Hexagonal Architecture), UC2-ADR-003 (Policy-Driven Workflow Routing), UC2-ADR-004 (Worker as the Single Write Path)  
 **Depended on by**: None
 
 ---
