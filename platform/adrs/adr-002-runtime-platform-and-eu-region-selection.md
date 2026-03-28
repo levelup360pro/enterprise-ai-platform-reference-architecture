@@ -27,14 +27,14 @@ Sweden Central remains the reference region for this repository because it combi
 
 ## Decision Drivers
 
-1. **Explicit application boundary**: The frontend, backend API, and background workers are part of one regulated internal application surface with shared identity, networking, diagnostics, and deployment controls.
-2. **Deterministic orchestration without hidden runtime magic**: The platform needs explicit request/response APIs, explicit workflow state, queue-driven background execution, and auditable job status.
-3. **EU data residency with private networking**: All data at rest and in transit must remain within the EU. Internal ingress, private endpoints, private DNS, and managed identities are required.
-4. **Operational symmetry**: The hosting model should minimise special cases between frontend, backend, and worker services.
-5. **Enterprise messaging semantics**: Dead-lettering, duplicate detection, RBAC, private endpoints, and predictable delivery controls are preferred over the most lightweight queue option.
-6. **State clarity**: Queue state and database state must be the workflow truth, not runtime-local memory or opaque platform checkpoints.
-7. **Production maturity**: GA-level platform components first. Preview-only compute models remain migration targets rather than production dependencies.
-8. **Migration path**: The processing model must remain portable to Hosted Agents or other managed runtimes when those options meet the platform's private-networking and governance requirements.
+- **Explicit application boundary**: The frontend, backend API, and background workers are part of one regulated internal application surface with shared identity, networking, diagnostics, and deployment controls.
+- **Deterministic orchestration without hidden runtime magic**: The platform needs explicit request/response APIs, explicit workflow state, queue-driven background execution, and auditable job status.
+- **EU data residency with private networking**: All data at rest and in transit must remain within the EU. Internal ingress, private endpoints, private DNS, and managed identities are required.
+- **Operational symmetry**: The hosting model should minimise special cases between frontend, backend, and worker services.
+- **Enterprise messaging semantics**: Dead-lettering, duplicate detection, RBAC, private endpoints, and predictable delivery controls are preferred over the most lightweight queue option.
+- **State clarity**: Queue state and database state must be the workflow truth, not runtime-local memory or opaque platform checkpoints.
+- **Production maturity**: GA-level platform components first. Preview-only compute models remain migration targets rather than production dependencies.
+- **Migration path**: The processing model must remain portable to Hosted Agents or other managed runtimes when those options meet the platform's private-networking and governance requirements.
 
 ---
 
@@ -42,36 +42,63 @@ Sweden Central remains the reference region for this repository because it combi
 
 ### Frontend Hosting
 
-**Option A: Azure Static Web Apps** Static Web Apps supports private endpoints, Microsoft Entra ID authentication, and route-based authorization. It remains a valid option for genuinely static sites with a simple boundary. It is rejected for this platform because the UI is part of the same regulated application boundary as the API and background services. Using a different hosting model for the UI adds another ingress, another deployment model, and another operational special case without a compensating benefit.
+#### Option A: Azure Static Web Apps
 
-**Option B: Frontend container on Azure Container Apps (SELECTED)** The frontend runs as its own container app in the same internal Container Apps environment as the API and worker services. This gives the platform one compute boundary, one networking model, one identity model, one logging surface, and one revision strategy across the user-facing and processing components.
+Static Web Apps supports private endpoints, Microsoft Entra ID authentication, and route-based authorization. It remains a valid option for genuinely static sites with a simple boundary. It is rejected for this platform because the UI is part of the same regulated application boundary as the API and background services. Using a different hosting model for the UI adds another ingress, another deployment model, and another operational special case without a compensating benefit.
+
+#### Option B: Frontend container on Azure Container Apps (SELECTED)
+
+The frontend runs as its own container app in the same internal Container Apps environment as the API and worker services. This gives the platform one compute boundary, one networking model, one identity model, one logging surface, and one revision strategy across the user-facing and processing components.
 
 ### Backend and Background Runtime
 
-**Option A: Azure Durable Functions on Flex Consumption** Durable Functions remains a viable platform for event-driven or orchestration-heavy workloads. Private networking is supported on the right hosting plan, and the Functions programming model is still defensible when the team explicitly wants it. The Azure Storage backend for Durable Functions supports private endpoints and remains a valid option where Durable orchestration semantics are required within a private-networked design. It is no longer the preferred choice here because this platform benefits more from an explicit application service boundary than from a function-first hosting model. The architectural preference is for a web-queue-worker pattern with a FastAPI API boundary, Azure Service Bus for dispatch, and auditable workflow state in a relational database rather than in framework-managed orchestration storage. The corrected recommendation is not that Functions is incapable; it is that Functions is less aligned with the operational shape the platform now needs.
+#### Option A: Azure Durable Functions on Flex Consumption
 
-**Option B: FastAPI API plus worker services on Azure Container Apps (SELECTED)** The backend runs as a FastAPI container app. Background execution runs as a separate worker container app reading from Azure Service Bus. Azure Container Apps jobs are used only where a workload is clearly finite-duration and isolated per execution. This option keeps the HTTP surface explicit, separates API and worker responsibilities cleanly, supports internal-only ingress, and aligns naturally with the web-queue-worker pattern Microsoft continues to recommend for this class of workload.
+Durable Functions remains a viable platform for event-driven or orchestration-heavy workloads. Private networking is supported on the right hosting plan, and the Functions programming model is still defensible when the team explicitly wants it. The Azure Storage backend for Durable Functions supports private endpoints and remains a valid option where Durable orchestration semantics are required within a private-networked design. It is no longer the preferred choice here because this platform benefits more from an explicit application service boundary than from a function-first hosting model. The architectural preference is for a web-queue-worker pattern with a FastAPI API boundary, Azure Service Bus for dispatch, and auditable workflow state in a relational database rather than in framework-managed orchestration storage. The corrected recommendation is not that Functions is incapable; it is that Functions is less aligned with the operational shape the platform now needs.
 
-**Option C: Azure Functions on Azure Container Apps** Functions hosted on Container Apps narrows some of the gap between the two models, but it still preserves the function runtime abstraction while adding container operational overhead. For this platform, if the team is going to accept the operational model of containers, it is cleaner to run the API and worker code directly rather than layering the Functions runtime on top.
+#### Option B: FastAPI API plus worker services on Azure Container Apps (SELECTED)
 
-**Option D: Foundry Agent Service Hosted Agents (preview)** Hosted Agents remains the most interesting managed-compute migration target because it can run the same Agent Framework code in containers. It stays rejected for production because private networking support is not yet available at the required maturity level.
+The backend runs as a FastAPI container app. Background execution runs as a separate worker container app reading from Azure Service Bus. Azure Container Apps jobs are used only where a workload is clearly finite-duration and isolated per execution. This option keeps the HTTP surface explicit, separates API and worker responsibilities cleanly, supports internal-only ingress, and aligns naturally with the web-queue-worker pattern Microsoft continues to recommend for this class of workload.
 
-**Option E: Durable Functions with Durable Task Scheduler** Durable Task Scheduler is the managed backend for Durable Functions, replacing Azure Storage with a purpose-built scheduler service that communicates with the application over gRPC. It offers better performance characteristics, a built-in dashboard, and removes the need for a separate storage account for orchestration state. It is rejected for this platform because, as validated in March 2026, the service does not provide the private-networking posture required by this architecture. There is no private endpoint support, no private-only inbound connectivity model, and no documented private DNS pattern equivalent to the services selected elsewhere in the platform. The scheduler endpoint resolves publicly. In a platform where internal-only networking and private connectivity are explicit design principles, this is a blocking constraint. TLS, Microsoft Entra authentication, and RBAC are useful controls, but they do not satisfy the platform’s requirement for private-only service exposure. If private endpoint support reaches GA, this option should be re-evaluated against the selected Container Apps worker pattern.
+#### Option C: Azure Functions on Azure Container Apps
+
+Functions hosted on Container Apps narrows some of the gap between the two models, but it still preserves the function runtime abstraction while adding container operational overhead. For this platform, if the team is going to accept the operational model of containers, it is cleaner to run the API and worker code directly rather than layering the Functions runtime on top.
+
+#### Option D: Foundry Agent Service Hosted Agents (preview)
+
+Hosted Agents remains the most interesting managed-compute migration target because it can run the same Agent Framework code in containers. It stays rejected for production because private networking support is not yet available at the required maturity level.
+
+#### Option E: Durable Functions with Durable Task Scheduler
+
+Durable Task Scheduler is the managed backend for Durable Functions, replacing Azure Storage with a purpose-built scheduler service that communicates with the application over gRPC. It offers better performance characteristics, a built-in dashboard, and removes the need for a separate storage account for orchestration state. It is rejected for this platform because, as validated in March 2026, the service does not provide the private-networking posture required by this architecture. There is no private endpoint support, no private-only inbound connectivity model, and no documented private DNS pattern equivalent to the services selected elsewhere in the platform. The scheduler endpoint resolves publicly. In a platform where internal-only networking and private connectivity are explicit design principles, this is a blocking constraint. TLS, Microsoft Entra authentication, and RBAC are useful controls, but they do not satisfy the platform’s requirement for private-only service exposure. If private endpoint support reaches GA, this option should be re-evaluated against the selected Container Apps worker pattern.
+
 ### Queueing and Workflow State
 
-**Option A: Azure Storage Queues plus storage-backed state** Storage Queues is simpler and cheaper, but the platform gives up richer delivery semantics, dead-lettering, duplicate detection, sessions, and the stronger enterprise governance posture that Service Bus provides.
+#### Option A: Azure Storage Queues plus storage-backed state
 
-**Option B: Azure Service Bus plus Azure SQL Database (SELECTED)** Service Bus handles work dispatch. Azure SQL Database stores workflow state, job executions, message lineage, retries, and audit-oriented operational data. This keeps dispatch and state explicit, queryable, and independently observable.
+Storage Queues is simpler and cheaper, but the platform gives up richer delivery semantics, dead-lettering, duplicate detection, sessions, and the stronger enterprise governance posture that Service Bus provides.
 
-**Option C: Azure Service Bus plus PostgreSQL Flexible Server** PostgreSQL Flexible Server is still a valid alternative when the platform intentionally models agent or workflow payloads as JSONB-first entities or when portability outside Azure is an explicit design driver. It is not the default recommendation for this repository.
+#### Option B: Azure Service Bus plus Azure SQL Database (SELECTED)
+
+Service Bus handles work dispatch. Azure SQL Database stores workflow state, job executions, message lineage, retries, and audit-oriented operational data. This keeps dispatch and state explicit, queryable, and independently observable.
+
+#### Option C: Azure Service Bus plus PostgreSQL Flexible Server
+
+PostgreSQL Flexible Server is still a valid alternative when the platform intentionally models agent or workflow payloads as JSONB-first entities or when portability outside Azure is an explicit design driver. It is not the default recommendation for this repository.
 
 ### EU Region Selection
 
-**Sweden Central (SELECTED)** Broad GA service and model availability across EU regions. Frequently receives early EU availability for new AI models and capabilities. Azure Container Apps workload profiles, Azure Service Bus Premium, Azure SQL Database, AI Search, Content Understanding, Document Intelligence, Foundry Projects, and Fabric are all available. Sweden Central is also the EU region used for validating future Content Understanding capabilities during development.
+#### Sweden Central (SELECTED)
 
-**North Europe (Ireland)** Viable production region if a client landing zone requires it. The trade-off is narrower AI model availability and no access to the Content Understanding preview capabilities used for development validation.
+Broad GA service and model availability across EU regions. Frequently receives early EU availability for new AI models and capabilities. Azure Container Apps workload profiles, Azure Service Bus Premium, Azure SQL Database, AI Search, Content Understanding, Document Intelligence, Foundry Projects, and Fabric are all available. Sweden Central is also the EU region used for validating future Content Understanding capabilities during development.
 
-**West Europe (Netherlands)** Also viable for production with the same trade-off profile as North Europe. Validate service and capacity availability per engagement.
+#### North Europe (Ireland)
+
+Viable production region if a client landing zone requires it. The trade-off is narrower AI model availability and no access to the Content Understanding preview capabilities used for development validation. As of March 2026, Azure AI Search in North Europe is flagged by Microsoft as capacity-constrained, which may prevent creation of new search services.
+
+#### West Europe (Netherlands)
+
+Also viable for production with the same trade-off profile as North Europe. As of March 2026, Azure Container Apps provisioning in West Europe is experiencing ongoing capacity failures. Validate service and capacity availability per engagement.
 
 ---
 
@@ -133,15 +160,11 @@ The choice depends on the client's existing connectivity, the volume and frequen
 
 ## Risks and Mitigations
 
-**Container Apps workload sprawl**: Frontend, API, worker, and optional jobs can grow into too many independently managed services. **Mitigation**: keep the split intentional and limited to genuine trust or workload boundaries; share one internal environment and one observability model.
-
-**Worker backlog growth**: A queue-based design can hide failures if backlog, dead-letter volume, or retry storms are not monitored. **Mitigation**: instrument Service Bus queue depth, dead-letter counts, processing latency, and retry rates in Application Insights and Azure Monitor alerts.
-
-**Database coupling**: If workflow state is allowed to drift into ungoverned semi-structured payloads, the SQL-first bias loses its value. **Mitigation**: keep the operational schema relational by default; use PostgreSQL only when a conscious JSONB-first decision is documented.
-
-**Preview migration targets remain immature**: Hosted Agents and other managed runtimes may eventually become simpler than Container Apps. **Mitigation**: keep executor logic decoupled from hosting and review migration triggers quarterly.
-
-**Single-region deployment**: A regional outage in the selected region delays processing. **Mitigation**: this is acceptable for the current batch-oriented platform scope; revisit active-passive multi-region only if client SLAs require it.
+- **Container Apps workload sprawl**: Frontend, API, worker, and optional jobs can grow into too many independently managed services. **Mitigation**: keep the split intentional and limited to genuine trust or workload boundaries; share one internal environment and one observability model.
+- **Worker backlog growth**: A queue-based design can hide failures if backlog, dead-letter volume, or retry storms are not monitored. **Mitigation**: instrument Service Bus queue depth, dead-letter counts, processing latency, and retry rates in Application Insights and Azure Monitor alerts.
+- **Database coupling**: If workflow state is allowed to drift into ungoverned semi-structured payloads, the SQL-first bias loses its value. **Mitigation**: keep the operational schema relational by default; use PostgreSQL only when a conscious JSONB-first decision is documented.
+- **Preview migration targets remain immature**: Hosted Agents and other managed runtimes may eventually become simpler than Container Apps. **Mitigation**: keep executor logic decoupled from hosting and review migration triggers quarterly.
+- **Single-region deployment**: A regional outage in the selected region delays processing. **Mitigation**: this is acceptable for the current batch-oriented platform scope; revisit active-passive multi-region only if client SLAs require it.
 
 ---
 

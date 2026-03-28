@@ -145,7 +145,7 @@ There is no source code in this repository. The architecture and design decision
 
 **IT managers and heads of IT** responsible for platform decisions. If you are being asked to "do AI" but need to satisfy security, compliance, and audit before anything ships, the governance model here is designed for that conversation.
 
-**Fractional CTOs and CIOs** advising PE-backed or mid-market companies. If you are building an AI strategy and need the architecture layer underneath it, this is what that looks like in practice.
+**CTOs and CIOs** If you are building an AI strategy and need the architecture layer underneath it, this is what that looks like in practice.
 
 **Security and compliance teams** who need to understand what a governed AI system actually requires. Not a vendor slide. Not a policy document. The actual controls, thresholds, and audit mechanisms.
 

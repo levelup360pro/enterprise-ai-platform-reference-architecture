@@ -18,25 +18,27 @@ Every major platform service either stores data directly or processes protected 
 
 ## Decision Drivers
 
-**Regulatory defensibility.** Regulated environments (financial services, healthcare, public sector) may require demonstrable control over encryption keys, not just that data is encrypted. The ability to show that encryption keys are customer-owned, rotatable, and revocable is a distinct audit requirement from "data is encrypted at rest."
-
-**Zero-touch key management.** Key rotation should not require manual intervention. Auto-rotation through Key Vault with versionless key URIs is the target operating model. Manual rotation introduces operational risk and audit exposure.
-
-**Blast radius containment.** Key revocation should be able to render specific data stores inaccessible without affecting the entire platform. Per-service key separation supports this, though all keys reside in a shared vault which remains a dependency concentration point. The revocation granularity and dependency concentration coexist; per-service keys mitigate but do not eliminate the shared-vault dependency.
-
-**Operational simplicity.** CMK adds complexity (Key Vault dependency, identity configuration, rotation monitoring, deployment sequencing). The architecture should not apply CMK where it adds significant complexity without proportionate security benefit.
-
-**Cost awareness.** Some CMK configurations require higher-tier resources. The architecture documents where CMK introduces cost thresholds so the decision is informed.
+- **Regulatory defensibility**: Regulated environments (financial services, healthcare, public sector) may require demonstrable control over encryption keys, not just that data is encrypted. The ability to show that encryption keys are customer-owned, rotatable, and revocable is a distinct audit requirement from "data is encrypted at rest."
+- **Zero-touch key management**: Key rotation should not require manual intervention. Auto-rotation through Key Vault with versionless key URIs is the target operating model. Manual rotation introduces operational risk and audit exposure.
+- **Blast radius containment**: Key revocation should be able to render specific data stores inaccessible without affecting the entire platform. Per-service key separation supports this, though all keys reside in a shared vault which remains a dependency concentration point. The revocation granularity and dependency concentration coexist; per-service keys mitigate but do not eliminate the shared-vault dependency.
+- **Operational simplicity**: CMK adds complexity (Key Vault dependency, identity configuration, rotation monitoring, deployment sequencing). The architecture should not apply CMK where it adds significant complexity without proportionate security benefit.
+- **Cost awareness**: Some CMK configurations require higher-tier resources. The architecture documents where CMK introduces cost thresholds so the decision is informed.
 
 ---
 
 ## Considered Alternatives
 
-**Option A: Microsoft-managed keys everywhere (MMK-only).** Accept the Azure default. Every service encrypts at rest with Microsoft-managed keys. No Key Vault dependency for encryption. Simplest operationally. No rotation overhead. The trade-off: the client cannot demonstrate independent control over encryption keys, which may not satisfy audit requirements in regulated environments.
+### Option A: Microsoft-managed keys everywhere (MMK-only)
 
-**Option B: CMK everywhere (maximum control).** Every service that supports CMK is configured with customer-managed keys. Maximum control and auditability. The trade-off: CMK for Log Analytics requires a dedicated cluster with a minimum 100 GB/day commitment tier, which is unlikely to be cost-justified for a single-workload platform. The operational overhead of managing CMK for transient messaging services and lower-sensitivity operational stores is disproportionate to the security benefit.
+Accept the Azure default. Every service encrypts at rest with Microsoft-managed keys. No Key Vault dependency for encryption. Simplest operationally. No rotation overhead. The trade-off: the client cannot demonstrate independent control over encryption keys, which may not satisfy audit requirements in regulated environments.
 
-**Option C: CMK for business data stores, MMK for operational services (SELECTED).** Apply CMK to supported services storing business or regulated data where the control benefit is proportionate and operationally supportable. Use MMK for operational or transient services, or where CMK is unavailable or economically disproportionate. This creates a defensible control story ("all business data is encrypted with customer-controlled keys") without requiring infrastructure that cannot be justified for the workload.
+### Option B: CMK everywhere (maximum control)
+
+Every service that supports CMK is configured with customer-managed keys. Maximum control and auditability. The trade-off: CMK for Log Analytics requires a dedicated cluster with a minimum 100 GB/day commitment tier, which is unlikely to be cost-justified for a single-workload platform. The operational overhead of managing CMK for transient messaging services and lower-sensitivity operational stores is disproportionate to the security benefit.
+
+### Option C: CMK for business data stores, MMK for operational services (SELECTED)
+
+Apply CMK to supported services storing business or regulated data where the control benefit is proportionate and operationally supportable. Use MMK for operational or transient services, or where CMK is unavailable or economically disproportionate. This creates a defensible control story ("all business data is encrypted with customer-controlled keys") without requiring infrastructure that cannot be justified for the workload.
 
 ---
 
@@ -226,11 +228,17 @@ Note on Foundry role: The current Foundry CMK documentation (March 2026) specifi
 
 The following sequencing dependencies must be enforced in IaC pipelines. Violating them results in either failed deployments or unrecoverable states, AI Search objects created without CMK cannot be retroactively encrypted and must be recreated.
 
-**Phase 1: Key Vault and keys.** Key Vault Premium provisioned in EU region. Soft-delete, purge protection enabled. Private endpoint created. "Allow trusted Microsoft services" enabled. Auto-rotation policy configured. RSA keys created, per-service keys recommended for independent revocation; see Open Item 3.
+### Phase 1: Key Vault and keys
 
-**Phase 2: Identity and RBAC.** All CMK identities provisioned, `uami-storage-cmk`, `sami-search`, Foundry CMK identity, Fabric Platform CMK service principal, Azure SQL CMK identity if SQL CMK is enabled through server identity or dedicated UAMI. Key Vault role assignments confirmed for each identity. Role assignments must be active before any CMK-dependent resource is provisioned.
+Key Vault Premium provisioned in EU region. Soft-delete, purge protection enabled. Private endpoint created. "Allow trusted Microsoft services" enabled. Auto-rotation policy configured. RSA keys created, per-service keys recommended for independent revocation; see Open Item 3.
 
-**Phase 3: CMK-dependent resources.** Storage account created with CMK configuration referencing versionless key URI and `uami-storage-cmk`. AI Search service created on billable tier. CMK enforcement set via Management REST API if using Deny policy. Indexes, indexers, skillsets, data sources created with CMK specified in the creation call. Foundry resource created or updated with CMK configuration. Fabric tenant setting enabled, workspace CMK enabled referencing versionless key URI. Azure SQL logical server configured with TDE protector in Key Vault before database protection posture is considered complete.
+### Phase 2: Identity and RBAC
+
+All CMK identities provisioned, `uami-storage-cmk`, `sami-search`, Foundry CMK identity, Fabric Platform CMK service principal, Azure SQL CMK identity if SQL CMK is enabled through server identity or dedicated UAMI. Key Vault role assignments confirmed for each identity. Role assignments must be active before any CMK-dependent resource is provisioned.
+
+### Phase 3: CMK-dependent resources
+
+Storage account created with CMK configuration referencing versionless key URI and `uami-storage-cmk`. AI Search service created on billable tier. CMK enforcement set via Management REST API if using Deny policy. Indexes, indexers, skillsets, data sources created with CMK specified in the creation call. Foundry resource created or updated with CMK configuration. Fabric tenant setting enabled, workspace CMK enabled referencing versionless key URI. Azure SQL logical server configured with TDE protector in Key Vault before database protection posture is considered complete.
 
 **Critical constraint, AI Search**: No index creation before Phase 1 and Phase 2 are complete. Per Microsoft documentation, CMK encryption is irreversible and per-object at creation time. An object created without CMK cannot be retroactively encrypted; it must be deleted and recreated.
 
@@ -296,21 +304,14 @@ Purview integration points are represented in the platform infrastructure diagra
 
 ## Follow-ups
 
-**IaC**: Encode the full CMK specification per service: Key Vault Premium with auto-rotation policy, RSA keys per CMK-consuming service, versionless key URIs, RBAC assignments for all CMK identities, ADR-004 section 4.2.1, Storage account CMK configuration with `uami-storage-cmk`, AI Search CMK enforcement via Management REST API, Foundry resource CMK configuration, Fabric tenant setting and workspace CMK enablement, and Azure SQL TDE protector configuration. Deployment sequencing, section 9, must be codified in the pipeline: Key Vault and keys first, identity and RBAC second, CMK-dependent resources third.
-
-**Policy enforcement transition**: Deploy Azure Policies in audit mode, TLS minimum version policy `fe83a0eb-a853-422d-aff8-513bc498900d`, AI Search CMK AuditIfNotExists. Validate no deployment or runtime operations depend on prohibited configurations. Transition to deny after validation period. Aligned with ADR-004 Open Item 3.
-
-**ADR-006 telemetry governance constraint**: ADR-006 must document the binding rule that the Container Apps workload code must not log PII, business data, or extraction content in telemetry payloads. ADR-006 must define the enforcement mechanism, code review checklist, automated PII scanning, periodic telemetry audit. This constraint is a direct dependency of the Log Analytics MMK decision in section 6.7.
-
-**Service Bus payload boundary rules**: Document Service Bus payload boundary rules in application design guidelines. Define what constitutes permissible dispatch content (job ID, correlation ID, message type, timestamp) versus prohibited content (extraction output, approval evidence, business records). Enforce through code review and periodic payload audit. This mirrors the Log Analytics telemetry governance constraint pattern and keeps the two MMK decisions symmetrical in their enforcement approach.
-
-**Spike: Foundry CMK versionless key validation**: Test whether configuring Foundry CMK with a versionless key URI results in automatic pickup of new key versions after Key Vault rotation. If not, implement Event Grid subscription for key rotation events with an automated step to update the Foundry resource's key version reference. This spike resolves Open Item 1 and determines whether the Foundry rotation risk in section 15 can be closed.
-
-**Spike: Azure SQL CMK rotation validation**: Test whether Azure SQL Database TDE with customer-managed protector follows zero-touch rotation with versionless key identifiers in the chosen provisioning path. If not, define the operational update procedure and alerting model. This spike resolves Open Item 6.
-
-**Spike: End-to-end CMK validation**: Validate that all CMK-configured services can encrypt and decrypt data successfully with the platform Key Vault configuration, private endpoint, trusted services bypass, RBAC. Test key revocation and reinstatement for each service. Confirm AI Search CMK latency impact is within acceptable SLA bounds. Confirm Fabric CMK revocation takes effect within the documented 60-minute window.
-
-**Shared Private Link provisioning and approval workflow.** Validate the end-to-end sequence during the IaC spike: (a) PUT on the search service sharedPrivateLinkResources to create a private link to Key Vault (subresource: vault), (b) approve the pending private endpoint connection on the Key Vault side, (c) confirm the link transitions to Approved/Succeeded state, (d) verify AI Search can unwrap the CMK via the shared private link with Key Vault public access disabled. Document the provisioning sequence in IaC templates and include the approval step in the deployment pipeline. Reference: [https://learn.microsoft.com/en-us/azure/search/search-indexer-howto-access-private](https://learn.microsoft.com/en-us/azure/search/search-indexer-howto-access-private).
+- **IaC**: Encode the full CMK specification per service: Key Vault Premium with auto-rotation policy, RSA keys per CMK-consuming service, versionless key URIs, RBAC assignments for all CMK identities, ADR-004 section 4.2.1, Storage account CMK configuration with `uami-storage-cmk`, AI Search CMK enforcement via Management REST API, Foundry resource CMK configuration, Fabric tenant setting and workspace CMK enablement, and Azure SQL TDE protector configuration. Deployment sequencing, section 9, must be codified in the pipeline: Key Vault and keys first, identity and RBAC second, CMK-dependent resources third.
+- **Policy enforcement transition**: Deploy Azure Policies in audit mode, TLS minimum version policy `fe83a0eb-a853-422d-aff8-513bc498900d`, AI Search CMK AuditIfNotExists. Validate no deployment or runtime operations depend on prohibited configurations. Transition to deny after validation period. Aligned with ADR-004 Open Item 3.
+- **ADR-006 telemetry governance constraint**: ADR-006 must document the binding rule that the Container Apps workload code must not log PII, business data, or extraction content in telemetry payloads. ADR-006 must define the enforcement mechanism, code review checklist, automated PII scanning, periodic telemetry audit. This constraint is a direct dependency of the Log Analytics MMK decision in section 6.7.
+- **Service Bus payload boundary rules**: Document Service Bus payload boundary rules in application design guidelines. Define what constitutes permissible dispatch content (job ID, correlation ID, message type, timestamp) versus prohibited content (extraction output, approval evidence, business records). Enforce through code review and periodic payload audit. This mirrors the Log Analytics telemetry governance constraint pattern and keeps the two MMK decisions symmetrical in their enforcement approach.
+- **Spike: Foundry CMK versionless key validation**: Test whether configuring Foundry CMK with a versionless key URI results in automatic pickup of new key versions after Key Vault rotation. If not, implement Event Grid subscription for key rotation events with an automated step to update the Foundry resource's key version reference. This spike resolves Open Item 1 and determines whether the Foundry rotation risk in section 15 can be closed.
+- **Spike: Azure SQL CMK rotation validation**: Test whether Azure SQL Database TDE with customer-managed protector follows zero-touch rotation with versionless key identifiers in the chosen provisioning path. If not, define the operational update procedure and alerting model. This spike resolves Open Item 6.
+- **Spike: End-to-end CMK validation**: Validate that all CMK-configured services can encrypt and decrypt data successfully with the platform Key Vault configuration, private endpoint, trusted services bypass, RBAC. Test key revocation and reinstatement for each service. Confirm AI Search CMK latency impact is within acceptable SLA bounds. Confirm Fabric CMK revocation takes effect within the documented 60-minute window.
+- **Shared Private Link provisioning and approval workflow.** Validate the end-to-end sequence during the IaC spike: (a) PUT on the search service sharedPrivateLinkResources to create a private link to Key Vault (subresource: vault), (b) approve the pending private endpoint connection on the Key Vault side, (c) confirm the link transitions to Approved/Succeeded state, (d) verify AI Search can unwrap the CMK via the shared private link with Key Vault public access disabled. Document the provisioning sequence in IaC templates and include the approval step in the deployment pipeline. Reference: [https://learn.microsoft.com/en-us/azure/search/search-indexer-howto-access-private](https://learn.microsoft.com/en-us/azure/search/search-indexer-howto-access-private).
 
 ---
 
