@@ -1,7 +1,7 @@
 # ADR-007: Copilot Studio as Conversational Interface, Microsoft Foundry as Governed Backend
 
 **Status:** Accepted  
-**Date:** 28/03/2026  
+**Date:** 27/03/2026  
 **Decision Scope:** How the platform integrates Microsoft Copilot Studio, Power Platform Managed Environments, and Microsoft Foundry for private, governed, production-grade AI systems.  
 **Depends on:** Platform ADR-002 (Runtime Platform and EU Region), Platform ADR-003 (Network Isolation and Data Residency), Platform ADR-004 (Identity and Authentication), Platform ADR-005 (Data Protection)  
 **Depended on by:** None
