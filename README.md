@@ -171,7 +171,7 @@ LinkedIn: [https://www.linkedin.com/in/manuel-tomas-estarlich/](https://www.link
 
 LevelUp360: [https://levelup360.pro](https://levelup360.pro/)
 
-Newsletter: [https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7428478846196367362](From Clarity to Production)
+Newsletter: [From Clarity to Production](https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7428478846196367362)
 
 ---
 
