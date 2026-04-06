@@ -34,7 +34,7 @@ Four capabilities, built on a shared platform. Not four separate projects. One d
 
 **Document Intelligence.** Extraction, classification, and unification of enterprise documents into governed structured outputs for downstream analytics and retrieval. One example is building a governed view of the contractual relationship with a given client from the underlying document estate and related enterprise data. Confidence scoring on every extracted field. Extraction outcomes are routed through policy-driven controls. Some proceed directly. Some enter intermediate validation. Some require human review before operationalisation. Structured output lands in Microsoft Fabric for relationship-oriented analytics.
 
-**Conversational Analytics.** Natural language querying across structured data in Fabric and enterprise systems, using RAG with AI Search and Foundry models. Business users ask questions in plain English and get grounded answers with source citations. Copilot Studio as the delivery channel where it makes sense for M365 organisations.
+**Chat with Data.** Natural language querying across structured data in Fabric and enterprise knowledge, using RAG with AI Search and Foundry models. Business users ask questions in plain English and get grounded answers with source citations. Copilot Studio as the delivery channel where it makes sense for M365 organisations.
 
 **Contract Intelligence.** Automated comparison between sent and returned contract versions. Extraction of both documents, deterministic field-level diff, and semantic analysis of what changed and why it matters. Risk classification of deviations. Content Understanding Pro Mode with reference data for template-based comparison.
 
@@ -114,12 +114,16 @@ enterprise-ai-platform/
     adrs/
     diagrams/
   use-cases/
+    uc1-chat-with-data/
+      README.md
+      reference-architecture.md
+      adrs/
+      diagrams/
     uc2-document-intelligence/
       README.md
       reference-architecture.md
       adrs/
       diagrams/
-    uc1-conversational-analytics/
     uc3-contract-intelligence/
     uc4-audit-automation/  
 ```
@@ -128,12 +132,12 @@ enterprise-ai-platform/
 
 **use-cases/** contains the architecture for each capability. When a use case is documented, it follows the same structure: `README.md`, `reference-architecture.md`, `adrs/`, and `diagrams/`. UC2 (Document Intelligence) is the first fully documented use case. The other use-case folders currently exist as placeholders for future documentation.
 
-| Use Case                   | Document                                                        | Description                                                                                                                                                                                                                                                                                               |
-| -------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| UC1: Chat with Data        | Planned                                                         | Natural language querying across structured data in Fabric and enterprise systems, using RAG with AI Search and Foundry models.                                                                                                                                                                           |
-| UC2: Document Intelligence | `use-cases/uc2-document-intelligence/reference-architecture.md` | Extraction, classification, and unification of enterprise documents into governed structured outputs for downstream analytics and retrieval. One example is building a governed view of the contractual relationship with a given client from the underlying document estate and related enterprise data. |
-| UC3: Contract Comparison   | Planned                                                         | Automated delta identification between sent and returned contract versions.                                                                                                                                                                                                                               |
-| UC4: Audit Preparation     | Planned                                                         | Internal audit capability mimicking AI-powered external auditors, using RAG-based knowledge retrieval.                                                                                                                                                                                                    |
+| Use Case                   | Document                                                                                                                       | Description                                                                                                                                                                                                                                                                                               |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| UC1: Chat with Data        | [use-cases/uc1-chat-with-data/reference-architecture.md](use-cases/uc1-chat-with-data/reference-architecture.md)               | Natural language querying across Microsoft Fabric for curated analytical truth and Azure AI Search for indexed for source-grounded enterprise knowledge.                                                                                                                                                  |
+| UC2: Document Intelligence | [use-cases/uc2-document-intelligence/reference-architecture.md](use-cases/uc2-document-intelligence/reference-architecture.md) | Extraction, classification, and unification of enterprise documents into governed structured outputs for downstream analytics and retrieval. One example is building a governed view of the contractual relationship with a given client from the underlying document estate and related enterprise data. |
+| UC3: Contract Comparison   | Planned                                                                                                                        | Automated delta identification between sent and returned contract versions.                                                                                                                                                                                                                               |
+| UC4: Audit Preparation     | Planned                                                                                                                        | Internal audit capability mimicking AI-powered external auditors, using RAG-based knowledge retrieval.                                                                                                                                                                                                    |
 
 There is no source code in this repository. The architecture and design decisions are the deliverables.
 

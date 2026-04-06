@@ -14,29 +14,29 @@ Transforms fragmented enterprise documents (contracts, amendments, NDAs, corresp
 > 
 ## UC2 ADRs
 
-| ADR     | Title                                              | Decision Scope                                                                                                 | Status |
-| ------- | -------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | ------ |
-| ADR-001 | Layered Hexagonal Architecture for UC2             | How UC2 separates orchestration, domain logic, infrastructure, and external resources                          | Draft  |
-| ADR-002 | Post-Extraction PII Classification                 | When and how PII is identified in UC2 extraction outputs                                                       | Draft  |
-| ADR-003 | Policy-Driven Workflow Routing                     | How extraction outcomes are routed using confidence and other control inputs                                   | Draft  |
-| ADR-004 | Worker as the Single Write Path                    | Which component owns authoritative writes to workflow state and staging                                        | Draft  |
-| ADR-005 | Separate Extraction from Embedding Generation      | Whether extraction and embedding are combined or independent pipeline stages                                   | Draft  |
-| ADR-006 | Staging as the Governed Downstream Boundary        | Where the boundary sits between UC2 processing and downstream consumers                                        | Draft  |
-| ADR-007 | Azure SQL as the Workflow System of Record         | Where workflow state and operational truth are persisted                                                       | Draft  |
-| ADR-008 | Schema-Defined Extraction by Document Type         | How extraction schemas are selected and managed across document types                                          | Draft  |
-| ADR-009 | Source-Aware Ingestion and Metadata Preservation   | How documents enter UC2 and how source reference and metadata are preserved across the workflow                | Draft  |
-| ADR-010 | Duplicate Handling and Reprocessing Semantics      | How UC2 distinguishes repeated ingestion, source-document change, and intentional reprocessing                 | Draft  |
-| ADR-011 | Failure Handling, Retry Budget, and Dead-Letter Semantics | How UC2 handles failures, bounds retries, and represents terminal failure for operational recovery       | Draft  |
-| ADR-012 | Agentic Validation Between Routing and Human Review | How UC2 uses optional agentic validation to enrich, resolve, or escalate policy-selected outputs before review | Draft  |
+| ADR     | Title                                                     | Decision Scope                                                                                                 | Status   |
+| ------- | --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | -------- |
+| ADR-001 | Layered Hexagonal Architecture for UC2                    | How UC2 separates orchestration, domain logic, infrastructure, and external resources                          | Accepted |
+| ADR-002 | Post-Extraction PII Classification                        | When and how PII is identified in UC2 extraction outputs                                                       | Accepted |
+| ADR-003 | Policy-Driven Workflow Routing                            | How extraction outcomes are routed using confidence and other control inputs                                   | Accepted |
+| ADR-004 | Worker as the Single Write Path                           | Which component owns authoritative writes to workflow state and staging                                        | Accepted |
+| ADR-005 | Separate Extraction from Embedding Generation             | Whether extraction and embedding are combined or independent pipeline stages                                   | Accepted |
+| ADR-006 | Staging as the Governed Downstream Boundary               | Where the boundary sits between UC2 processing and downstream consumers                                        | Accepted |
+| ADR-007 | Azure SQL as the Workflow System of Record                | Where workflow state and operational truth are persisted                                                       | Accepted |
+| ADR-008 | Schema-Defined Extraction by Document Type                | How extraction schemas are selected and managed across document types                                          | Accepted |
+| ADR-009 | Source-Aware Ingestion and Metadata Preservation          | How documents enter UC2 and how source reference and metadata are preserved across the workflow                | Accepted |
+| ADR-010 | Duplicate Handling and Reprocessing Semantics             | How UC2 distinguishes repeated ingestion, source-document change, and intentional reprocessing                 | Draft    |
+| ADR-011 | Failure Handling, Retry Budget, and Dead-Letter Semantics | How UC2 handles failures, bounds retries, and represents terminal failure for operational recovery             | Draft    |
+| ADR-012 | Agentic Validation Between Routing and Human Review       | How UC2 uses optional agentic validation to enrich, resolve, or escalate policy-selected outputs before review | Accepted |
 
 ## Diagrams
 
-| View                         | Purpose                                                                                                                          | Path                                                                      |
-| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| View                         | Purpose                                                                                                                          | Path                                                                                                                                                                                             |
+| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Platform Infrastructure View | Shared platform context inherited by UC2                                                                                         | [../../platform/diagrams/enterprise-ai-platform-reference-architecture-Infrastructure View.png](../../platform/diagrams/enterprise-ai-platform-reference-architecture-Infrastructure%20View.png) |
-| UC2 Data Flow View           | Primary UC2 architecture view showing components, processing flow, control points, staging boundary, and downstream consumers    | [diagrams/uc2-document-intelligence-data-flow-view.png](diagrams/uc2-document-intelligence-data-flow-view.png) |
-| UC2 Logical View             | Layered hexagonal architecture showing separation of orchestration, core domain, infrastructure adapters, and external resources | [diagrams/uc2-document-intelligence-logical-view.png](diagrams/uc2-document-intelligence-logical-view.png) |
-| UC2 Workflow View            | End-to-end operational lifecycle with status transitions, human review interaction, and audit trail                               | [diagrams/uc2-document-intelligence-workflow-view.png](diagrams/uc2-document-intelligence-workflow-view.png) |
+| UC2 Data Flow View           | Primary UC2 architecture view showing components, processing flow, control points, staging boundary, and downstream consumers    | [diagrams/uc2-document-intelligence-data-flow-view.png](diagrams/uc2-document-intelligence-data-flow-view.png)                                                                                   |
+| UC2 Logical View             | Layered hexagonal architecture showing separation of orchestration, core domain, infrastructure adapters, and external resources | [diagrams/uc2-document-intelligence-logical-view.png](diagrams/uc2-document-intelligence-logical-view.png)                                                                                       |
+| UC2 Workflow View            | End-to-end operational lifecycle with status transitions, human review interaction, and audit trail                              | [diagrams/uc2-document-intelligence-workflow-view.png](diagrams/uc2-document-intelligence-workflow-view.png)                                                                                     |
 
 ## Reading Order
 
