@@ -1,7 +1,7 @@
 # ADR-001: Processing Paradigm
 
 **Status**: Accepted  
-**Date**: 09/03/2026  
+**Date**: 09/03/2026 (Last updated 07/04/2026)  
 **Decision Scope**: Whether to use traditional deterministic software, fully autonomous multi-agent systems, or a hybrid approach as the fundamental processing paradigm for the enterprise AI platform  
 **Depended on by**: ADR-002 (Runtime Platform and EU Region Selection), all use-case ADRs
 
@@ -191,7 +191,8 @@ This is not "agents vs. pipelines." It is Workflows with three patterns of Execu
 
 - **Agent quality drift**: AI model outputs can degrade over time as models are updated or data distributions shift. This affects AI Service Executors and Agent Executors equally. Mitigation: continuous evaluation pipeline monitoring extraction quality, classification accuracy, and reasoning relevance. Confidence thresholds in the Workflow catch degradation automatically by routing more documents to human review when scores drop.
 - **Executor pattern boundary confusion**: Teams may use Agent Executors where AI Service Executors suffice (over-agenting), or deterministic code where AI service calls are needed (under-agenting). Mitigation: this ADR defines the selection criteria for each Executor pattern. Each use-case ADR applies those criteria to define the Executor pattern per stage with rationale. Code review checks that the Executor pattern matches the documented boundary. The test: if the processing path is defined in code (even if it includes an AI service call), it is a Deterministic or AI Service Executor, not an Agent Executor. If the processing path depends on intermediate results and cannot be pre-defined, it is an Agent Executor.
-- **SDK breaking changes**: The Agent Framework SDK remains prerelease / Release Candidate at the time of this decision and must be version-pinned. Extension packages have introduced breaking changes between RC versions. Mitigation: pin to exact version, isolate Executor business logic behind protocol interfaces (hexagonal architecture), upgrade in controlled cycles. ADR-002 documents the specific version pinning strategy and upgrade process.
+- ~~**SDK breaking changes**: The Agent Framework SDK remains prerelease / Release Candidate at the time of this decision and must be version-pinned. Extension packages have introduced breaking changes between RC versions. Mitigation: pin to exact version, isolate Executor business logic behind protocol interfaces (hexagonal architecture), upgrade in controlled cycles. ADR-002 documents the specific version pinning strategy and upgrade process.~~
+> **Update (April 2026):** Microsoft Agent Framework SDK reached GA. The breaking-change risk that motivated strict version pinning and hexagonal isolation of Executor business logic behind protocol interfaces is resolved. The mitigation pattern (protocol interfaces, controlled upgrade cycles) remains in place as standard engineering practice but is no longer driven by SDK instability. ADR-002 version-pinning strategy should be reviewed to determine whether exact-version pinning can be relaxed to compatible-version ranges.
 - **Over-engineering deterministic stages**: Wrapping simple deterministic logic in Agent Framework Executors adds overhead. Mitigation: Deterministic Executors should be thin. The business logic lives in service classes behind interfaces; the Executor is a lightweight wrapper that receives input, calls the service, and returns output. If the framework adds unacceptable latency to deterministic stages during the cold-start spike (ADR-002 Follow-up), re-evaluate whether the migration path justification still holds against the performance cost.
 
 ---
