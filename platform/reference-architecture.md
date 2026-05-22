@@ -10,7 +10,7 @@
 
 This reference architecture defines the shared platform for the enterprise AI workloads documented in this repository. The platform provides private networking, customer-managed encryption, identity-based access control, centralised observability, and AI safety controls as shared infrastructure. It supports two first-class user access paths: direct application access through the frontend and conversational access through M365 Channels (Microsoft Teams, Microsoft 365 Copilot) using Copilot Studio and Power Platform.
 
-The platform baseline now also includes a shared **AI Hub** with **Azure API Management (APIM) as AI Gateway**. The AI Hub is the governed publication and consumption boundary for shared AI capabilities. It exposes approved models, tools, and Foundry-hosted reusable agents through stable contracts while allowing the underlying backend deployment, routing, and quota model to evolve behind the gateway.
+The platform baseline includes a shared **AI Hub** with **Azure API Management (APIM) as AI Gateway**. The AI Hub is the governed publication and consumption boundary for shared AI capabilities. It exposes approved models, tools, and Foundry-hosted reusable agents through stable contracts while allowing the underlying backend deployment, routing, and quota model to evolve behind the gateway.
 
 The architecture targets organisations operating under regulatory obligations such as the EU AI Act, GDPR, and sector-specific frameworks in financial services, healthcare, public sector, and legal. It assumes a Microsoft Azure foundation with Microsoft Fabric as an external data platform and M365 Channels as an enterprise conversational surface.
 
@@ -61,7 +61,8 @@ The platform is designed to meet the following architectural goals:
 
 ## Architecture
 
-**Authoritative infrastructure baseline:** `docs/02-architecture/platform/diagrams/enterprise-ai-platform-reference-architecture.drawio` — page `AI Gateway - Infrastructure View`
+**Authoritative infrastructure baseline:** 
+![Authoritative infrastructure baseline](diagrams/enterprise-ai-platform-reference-architecture-Infrastructure%20View.png)
 
 The platform deploys into a single EU Azure region within an AI Landing Zone subscription. It assumes an existing Connectivity Subscription, following the Platform Landing Zone pattern, provides shared ingress, egress, and DNS services. The workload spoke peers into this network infrastructure. The AI Hub is treated as a dedicated shared-services boundary rather than as an application-local component. It hosts APIM as AI Gateway, its private endpoint, and the network integration required to reach private backend AI services.
 
