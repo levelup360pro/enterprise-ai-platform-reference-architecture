@@ -162,6 +162,8 @@ Compute subnet: Delegated to Microsoft.App/environments for the internal Azure C
 
 Private endpoint subnet: Hosts all private endpoints for platform services. No delegation required. Size based on the number of endpoints (minimum /27).
 
+APIM integration subnet: Required when APIM is part of the AI Hub baseline and must reach private backend services through outbound VNet integration. This is a dedicated subnet for a single APIM instance and is delegated to `Microsoft.ApiManagement/service`. Minimum /27, with /24 as the preferred starting point for operational headroom.
+
 Reserved subnet: Available for future expansion (jump box for debugging, VPN gateway for on-premises connectivity, additional compute). Not provisioned initially.
 
 No hub-and-spoke topology required for the platform itself. If the client has an existing hub-and-spoke network with centralised firewall/DNS, the platform VNet peers to the hub. The ADR documents what the platform needs; the client's network team integrates it.
@@ -178,6 +180,7 @@ Private Endpoint Inventory
 | Azure SQL Database                        | Microsoft.Sql/servers                    | sqlServer                     | privatelink.database.windows.net                                                                                                                     | Default workflow state store for jobs, executions, retries, and approvals                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | Azure Key Vault                           | Microsoft.KeyVault/vaults                | vault                         | privatelink.vaultcore.azure.net                                                                                                                      | Secrets and CMK for compute-layer services. AI Search CMK access uses a separate shared private link (see note below).                                                                                                                                                                                                                                                                                                                                                                                                                |
 | Application Insights / Log Analytics      | Azure Monitor Private Link Scope (AMPLS) | Multiple (azuremonitor)       | privatelink.monitor.azure.com, privatelink.oms.opinsights.azure.com, privatelink.ods.opinsights.azure.com, privatelink.agentsvc.azure-automation.net | AMPLS with ingestion and query access modes set to Private Only                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| Azure API Management (AI Gateway inbound) | Microsoft.ApiManagement/service          | gateway                       | privatelink.azure-api.net                                                                                                                            | Private inbound access to the AI Hub. This is the preferred shared-capability entry point for published models, tools, and reusable agents.                                                                                                                                                                                                                                                                                                                                                                                            |
 
 Note on Cosmos DB: Azure Cosmos DB is not included in this inventory. ADR-002 now places workflow state in Azure SQL Database and work dispatch in Azure Service Bus, so there is no platform requirement for Cosmos DB in the current architecture. If the platform later adopts a managed agent runtime that requires Cosmos DB as a backing service, it should be added to this inventory explicitly at that time.
 
@@ -278,19 +281,23 @@ Risk: AI Search resource instance rule requires a system-assigned managed identi
 
 ---
 
-## Network Topology Evolution
+## AI Hub Network Extension
 
-The current private endpoint topology connects the Container Apps environment workloads directly to the Foundry resource, AI Search, Key Vault, Service Bus, Azure SQL Database, and the two Storage Accounts. All model inference traffic flows over the API and worker apps to the Foundry private endpoint within the platform VNet.
+The platform now includes an AI Hub with APIM as AI Gateway for shared capability exposure. The network model therefore has two valid private call paths:
 
-If the platform scales beyond a single workload and introduces APIM as an AI Gateway (see ADR-001, Platform Scaling Boundary), the model-access path changes. APIM is an enterprise-wide shared service. It does not reside in the workload VNet or subscription. It is provisioned in its own VNet and subscription, potentially within the organisation's platform hub, managed by a central platform or networking team.
+1. **Direct workload-private path**: workload services call Foundry and other backend services directly over private connectivity when the capability is internal to that workload.
+2. **Shared capability path**: consumers call APIM through the AI Hub private endpoint, and APIM reaches private backend services through its own outbound VNet integration.
 
-The workload-side changes are limited. The direct Container Apps workload-to-Foundry private path is decommissioned. A new private endpoint is created for the APIM instance in the hub VNet. Model inference traffic flows from the frontend, API, and worker services through this private path to APIM, which forwards to Foundry over its own private endpoint. The connectivity between the workload VNet and the APIM VNet uses VNet peering or Private Link service depending on the organisation's hub-spoke topology.
+The AI Hub is treated as a dedicated shared-services boundary rather than an application-local component. APIM can be placed in a dedicated AI Hub spoke or another controlled shared-services network boundary, provided the following conditions hold:
 
-All other private endpoints within the workload VNet are unchanged. The Container Apps environment to AI Search, Key Vault, Service Bus, Azure SQL Database, and Storage paths remain private, and the AI Search to Storage (via resource-instance rule) and Fabric to Storage (via Trusted Workspace Access) paths are not affected. No subnet changes, address space changes, or VNet redesign are required in the workload landing zone.
+- inbound access to APIM uses a private endpoint on the `gateway` sub-resource
+- outbound APIM connectivity reaches private backend services through the APIM integration subnet
+- cross-VNet DNS resolution exists for both `privatelink.azure-api.net` and the backend `privatelink.*` zones APIM must resolve
+- VNet peering or equivalent approved private routing exists between workload networks, Power Platform delegated networks where required, and the AI Hub network boundary
 
-The hub-side provisioning (APIM VNet integration, APIM to Foundry private endpoint, cross-VNet DNS resolution, APIM policy configuration, and the operational model for gateway management) is outside the scope of this ADR. This ADR governs the workload landing zone network. The enterprise hub network topology and APIM provisioning are the responsibility of the central platform team and would be documented in their own infrastructure decisions.
+The direct workload-to-Foundry private path is not removed universally. It remains valid for workload-private logic. What changes is the default for **shared** capability exposure: shared consumers should traverse APIM rather than acquiring ad hoc direct backend access.
 
-This section does not constitute a decision to adopt APIM. The triggers, justification, and migration path are documented in ADR-001. This section documents only the workload-side network implications so that the current topology can be validated against the potential future state.
+All other private endpoints within the workload landing zone remain valid. The Container Apps environment to AI Search, Key Vault, Service Bus, Azure SQL Database, and Storage paths remain private, and the AI Search to Storage (via resource-instance rule) and Fabric to Storage (via Trusted Workspace Access) paths are unchanged.
 
 ---
 

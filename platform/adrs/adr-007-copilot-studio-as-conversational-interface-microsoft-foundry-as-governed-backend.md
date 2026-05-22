@@ -76,11 +76,11 @@ Each use case team chooses its own platform based on local requirements.
 
 ## Decision
 
-Adopt a conversational interface/governed backend split pattern. Copilot Studio is the preferred conversational interface where a Microsoft-native user interaction layer is desirable. In this platform, Copilot Studio is used only as the conversational surface. Microsoft Foundry is the preferred backend for advanced AI execution where agentic orchestration is required, including multi-agent coordination, governed tool use, complex workflow execution, and enterprise-grade backend control.
+Adopt a conversational interface/governed backend split pattern. Copilot Studio is the preferred conversational interface where a Microsoft-native user interaction layer is desirable. In this platform, Copilot Studio is used only as the conversational surface. Microsoft Foundry remains the preferred backend for advanced AI execution where agentic orchestration is required, including multi-agent coordination, governed tool use, complex workflow execution, and enterprise-grade backend control.
 
 Copilot Studio agents are published to Microsoft 365 channels (primarily Teams and M365 Copilot) via the built-in Teams and Microsoft 365 Copilot channel in Copilot Studio. Deployment is governed by the client's Teams Admin Center and Power Platform admin policies.
 
-Other governed backend services (such as Container Apps-hosted APIs per ADR-002) may sit behind the same conversational interface where the use case does not require Foundry-specific capabilities.
+Other governed backend services (such as Container Apps-hosted APIs per ADR-002) may sit behind the same conversational interface where the use case does not require Foundry-specific capabilities. Where those backends expose **shared** capabilities, the preferred mediation boundary is now the AI Hub with APIM as AI Gateway rather than a bespoke per-use-case surface.
 
 Power Platform Managed Environments with VNet delegation are the required connectivity mechanism for Copilot Studio to reach backend Azure services privately in production regulated environments where backend services have public network access disabled.
 
@@ -126,13 +126,13 @@ The platform processing layer already uses a compute subnet delegated to Microso
 
 **Platform default:**
 
-- **HTTP Request node to private-endpoint-enabled backend services.** This is the primary verified private integration mechanism and the default path for this platform. It applies to Foundry Agent Service endpoints, Container Apps-hosted APIs, and any other backend service exposed via private endpoint.
+- **HTTP Request node to APIM or other private-endpoint-enabled backend services.** Where Copilot Studio consumes a shared model, shared tool, or shared reusable agent, the preferred path is the AI Hub boundary through APIM. Where the backend remains workload-private, direct private HTTP Request integration to that backend remains valid.
 
 **Allowed alternatives, subject to validation:**
 
 - **Native Foundry Agent connector (connected agent integration).** This uses the Foundry public endpoint over the Microsoft backbone. It is acceptable where the organisation permits backbone-routed traffic and the Foundry resource has public access enabled. It is not available where public access is disabled.
-- **MCP connector within Copilot Studio.** Private MCP is supported through the VNet subnet where the MCP server is privately hosted. Public MCP endpoints follow the same constraints as any public-endpoint integration.
-- **Mediated API patterns** such as API Management where backend abstraction or protocol mediation is needed.
+- **MCP connector within Copilot Studio.** Private MCP is supported through the VNet subnet where the MCP server is privately hosted. In this platform, published shared MCP tools should be mediated through APIM so the same policy, subscription, and audit boundary applies.
+- **Direct workload-private API integration.** This remains valid where the backend capability is internal to one workload and is not being published through the AI Hub.
 
 No design should assume unrestricted public internet connectivity from Power Platform to backend Azure services in production regulated environments.
 

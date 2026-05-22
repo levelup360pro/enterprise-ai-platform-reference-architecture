@@ -8,13 +8,16 @@
 ---
 ## Platform Scaling Boundary
 
-This architecture is scoped as a single-workload AI landing zone. One subscription, one set of AI services, one processing pipeline, one agent runtime, one set of consumers. Governance, identity, networking, and observability are designed for this scope.
+This architecture still separates **workload-internal execution** from **shared platform capability exposure**. The processing paradigm defined by this ADR applies inside both boundaries: deterministic executors, AI service executors, and agent executors remain the model for governed execution.
 
-The architecture does not include an AI Gateway (Azure API Management as AI Gateway). The current scope does not present the multi-consumer governance problems that an AI Gateway addresses: cross-application token quota management, centralised tool discovery and policy enforcement across multiple consumers, multi-team rate limiting, portfolio-wide prompt and completion auditing, or load balancing across multiple model deployments serving independent applications.
+What has changed is the platform baseline. The enterprise platform now includes an **AI Hub with Azure API Management as AI Gateway** for shared models, shared tools, and Foundry-hosted reusable agents. Shared capability exposure is no longer deferred as a hypothetical future scaling step. It is part of the target platform baseline.
 
-APIM AI Gateway becomes justified when the platform scales beyond a single workload. The triggers are: multiple AI applications sharing model infrastructure where independent token budgets are required; shared tool endpoints that need centralised discovery, authentication mediation, and policy enforcement across organisational boundaries; regulatory or cost-attribution requirements that demand per-consumer token metering at the gateway layer rather than the application layer; or multiple teams deploying agents that require consistent content safety policy enforcement without embedding it in each application.
+The scaling boundary is therefore restated as follows:
 
-The architecture is designed so that adopting an AI Gateway is additive, not destructive. The application layer accesses Foundry models through an application abstraction with a configurable endpoint rather than embedding gateway assumptions into workflow logic. If an AI Gateway is introduced later, the expected changes are primarily in endpoint configuration, identity assignment, network routing, and observability policy rather than in the processing paradigm defined by this ADR. The detailed identity, network, and telemetry implications of that change are defined in downstream ADRs rather than in this ADR.
+- **Inside a workload boundary**, direct private access to Foundry and other backend services remains valid where the capability is internal to that workload and is not being published for reuse.
+- **Across a shared capability boundary**, APIM is the preferred mediation layer. This is where consumer isolation, quota management, policy enforcement, protocol mediation, and portfolio-level observability belong.
+
+The additive-adoption principle remains valid. Introducing the AI Hub does not change the processing paradigm. It changes endpoint configuration, identity assignment, network routing, consumer onboarding, and observability policy for shared capabilities. The workflow model, stage boundaries, and use-case-specific executor choices remain governed by this ADR.
 
 ---
 
