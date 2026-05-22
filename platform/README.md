@@ -33,7 +33,7 @@ Shared runtime, networking, identity, data protection, observability, and AI cap
 
 | Diagram | Path |
 | ------- | ---- |
-| Authoritative infrastructure baseline | `docs/02-architecture/platform/diagrams/enterprise-ai-platform-reference-architecture.drawio` — page `AI Gateway - Infrastructure View` |
+| Authoritative infrastructure baseline | [Authoritative infrastructure baseline](diagrams/enterprise-ai-platform-reference-architecture-Infrastructure%20View.png) |
 
 ## Use Cases
 
